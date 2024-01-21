@@ -40,14 +40,14 @@ return [
     'book_sort_notification'      => 'Book successfully re-sorted',
 
     // Bookshelves
-    'bookshelf_create'            => 'created shelf',
-    'bookshelf_create_notification'    => 'Shelf successfully created',
-    'bookshelf_create_from_book'    => 'converted book to shelf',
-    'bookshelf_create_from_book_notification'    => 'Book successfully converted to a shelf',
-    'bookshelf_update'                 => 'updated shelf',
-    'bookshelf_update_notification'    => 'Shelf successfully updated',
-    'bookshelf_delete'                 => 'deleted shelf',
-    'bookshelf_delete_notification'    => 'Shelf successfully deleted',
+    'bookshelf_create'            => 'created space',
+    'bookshelf_create_notification'    => 'Space successfully created',
+    'bookshelf_create_from_book'    => 'converted book to space',
+    'bookshelf_create_from_book_notification'    => 'Book successfully converted to a space',
+    'bookshelf_update'                 => 'updated space',
+    'bookshelf_update_notification'    => 'Space successfully updated',
+    'bookshelf_delete'                 => 'deleted space',
+    'bookshelf_delete_notification'    => 'Space successfully deleted',
 
     // Revisions
     'revision_restore' => 'restored revision',
