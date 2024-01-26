@@ -50,7 +50,7 @@
     </div>
 
     <div class="grid half">
-        <label  class="setting-list-label">Select Template</label>
+        <label  class="setting-list-label">{{ trans('settings.template') }}</label>
         <Select name="template_id" id="template_id" class="form-control">
                 @foreach ($templates as $template)
                     <option value="{{ $template->id }}">{{ $template->name }}</option>

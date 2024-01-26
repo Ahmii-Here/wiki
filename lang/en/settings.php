@@ -133,6 +133,9 @@ return [
     'audit_date_from' => 'Date Range From',
     'audit_date_to' => 'Date Range To',
 
+    // Template
+    'template' => 'Select Template',
+ 
     // Role Settings
     'roles' => 'Roles',
     'role_user_roles' => 'User Roles',

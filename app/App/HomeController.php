@@ -12,8 +12,10 @@ use BookStack\Entities\Repos\BookshelfRepo;
 use BookStack\Entities\Tools\PageContent;
 use BookStack\Http\Controller;
 use BookStack\Uploads\FaviconHandler;
+use BookStack\Users\Models\Template;
 use BookStack\Util\SimpleListOptions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -54,11 +56,11 @@ class HomeController extends Controller
         }
 
         $commonData = [
-            'activity'             => $activity,
-            'recents'              => $recents,
+            'activity' => $activity,
+            'recents' => $recents,
             'recentlyUpdatedPages' => $recentlyUpdatedPages,
-            'draftPages'           => $draftPages,
-            'favourites'           => $favourites,
+            'draftPages' => $draftPages,
+            'favourites' => $favourites,
         ];
 
         // Add required list ordering & sorting for books & shelves views.
@@ -72,7 +74,7 @@ class HomeController extends Controller
             ]);
 
             $commonData = array_merge($commonData, [
-                'view'        => $view,
+                'view' => $view,
                 'listOptions' => $listOptions,
             ]);
         }
@@ -102,8 +104,12 @@ class HomeController extends Controller
             return view('home.specific-page', array_merge($commonData, ['customHomepage' => $customHomepage]));
         }
 
-        
-
+        $commonData['path'] = DB::table('role_user')
+            ->join('roles', 'role_user.role_id', '=', 'roles.id')
+            ->join('template', 'roles.template_id', '=', 'template.id')
+            ->where('role_user.user_id', user()->id)
+            ->value('template.path');
+            
         return view('home.default', $commonData);
     }
 
