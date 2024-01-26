@@ -27,7 +27,7 @@ class Role extends Model implements Loggable
 {
     use HasFactory;
 
-    protected $fillable = ['display_name', 'description', 'external_auth_id', 'mfa_enforced'];
+    protected $fillable = ['display_name', 'description', 'external_auth_id', 'mfa_enforced','template_id'];
 
     protected $hidden = ['pivot'];
 
@@ -41,6 +41,11 @@ class Role extends Model implements Loggable
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->orderBy('name', 'asc');
+    }
+
+    public function template()
+    {
+        return $this->belongsToMany(Template::class);
     }
 
     /**

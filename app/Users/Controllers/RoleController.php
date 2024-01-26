@@ -6,6 +6,7 @@ use BookStack\Exceptions\PermissionsException;
 use BookStack\Http\Controller;
 use BookStack\Permissions\PermissionsRepo;
 use BookStack\Users\Models\Role;
+use BookStack\Users\Models\Template;
 use BookStack\Users\Queries\RolesAllPaginatedAndSorted;
 use BookStack\Util\SimpleListOptions;
 use Exception;
@@ -37,10 +38,10 @@ class RoleController extends Controller
         $roles->appends($listOptions->getPaginationAppends());
 
         $this->setPageTitle(trans('settings.roles'));
-
         return view('settings.roles.index', [
             'roles'       => $roles,
             'listOptions' => $listOptions,
+            
         ]);
     }
 
@@ -62,8 +63,8 @@ class RoleController extends Controller
         }
 
         $this->setPageTitle(trans('settings.role_create'));
-
-        return view('settings.roles.create', ['role' => $role]);
+        $templates = Template::all();
+        return view('settings.roles.create', ['role' => $role,'templates' => $templates]);
     }
 
     /**
@@ -78,8 +79,9 @@ class RoleController extends Controller
             'external_auth_id' => ['string'],
             'permissions'  => ['array'],
             'mfa_enforced' => ['string'],
+            'template_id' => ['string'],
         ]);
-
+        $data['template_id'] = gmp_init($data['template_id']);
         $data['permissions'] = array_keys($data['permissions'] ?? []);
         $data['mfa_enforced'] = ($data['mfa_enforced'] ?? 'false') === 'true';
         $this->permissionsRepo->saveNewRole($data);
@@ -96,8 +98,8 @@ class RoleController extends Controller
         $role = $this->permissionsRepo->getRoleById($id);
 
         $this->setPageTitle(trans('settings.role_edit'));
-
-        return view('settings.roles.edit', ['role' => $role]);
+        $templates = Template::all();
+        return view('settings.roles.edit', ['role' => $role,'templates' => $templates]);
     }
 
     /**
@@ -112,8 +114,9 @@ class RoleController extends Controller
             'external_auth_id' => ['string'],
             'permissions'  => ['array'],
             'mfa_enforced' => ['string'],
+            'template_id' => ['string'],
         ]);
-
+        $data['template_id'] = gmp_init($data['template_id']);
         $data['permissions'] = array_keys($data['permissions'] ?? []);
         $data['mfa_enforced'] = ($data['mfa_enforced'] ?? 'false') === 'true';
         $this->permissionsRepo->updateRole($id, $data);

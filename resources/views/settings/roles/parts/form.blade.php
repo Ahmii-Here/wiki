@@ -49,6 +49,15 @@
         </div>
     </div>
 
+    <div class="grid half">
+        <label  class="setting-list-label">Select Template</label>
+        <Select name="template_id" id="template_id" class="form-control">
+                @foreach ($templates as $template)
+                    <option value="{{ $template->id }}">{{ $template->name }}</option>
+                @endforeach
+        </Select>
+    </div>
+
     <div>
         <label class="setting-list-label">{{ trans('settings.role_asset') }}</label>
         <p>{{ trans('settings.role_asset_desc') }}</p>
