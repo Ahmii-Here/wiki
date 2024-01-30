@@ -2,6 +2,6 @@
 
 @section('body')
 
-@include($path)
+@include('home.templates.default')
 
 @stop
