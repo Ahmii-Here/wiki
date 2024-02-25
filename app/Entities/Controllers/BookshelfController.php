@@ -55,6 +55,37 @@ class BookshelfController extends Controller
         ]);
     }
 
+
+
+    public function index_tree(Request $request)
+    {
+        $view = setting()->getForCurrentUser('bookshelves_view_type');
+        $listOptions = SimpleListOptions::fromRequest($request, 'bookshelves')->withSortOptions([
+            'name'       => trans('common.sort_name'),
+            'created_at' => trans('common.sort_created_at'),
+            'updated_at' => trans('common.sort_updated_at'),
+        ]);
+
+        $shelves = $this->shelfRepo->getAllPaginated(18, $listOptions->getSort(), $listOptions->getOrder());
+        $recents = $this->isSignedIn() ? $this->shelfRepo->getRecentlyViewed(4) : false;
+        $popular = $this->shelfRepo->getPopular(4);
+        $new = $this->shelfRepo->getRecentlyCreated(4);
+        $left_space = $this->shelfRepo->getAll();
+
+        $this->shelfContext->clearShelfContext();
+        $this->setPageTitle(trans('Tree View'));
+
+        return view('shelves.index_tree', [
+            'shelves'     => $shelves,
+            'recents'     => $recents,
+            'popular'     => $popular,
+            'new'         => $new,
+            'view'        => $view,
+            'listOptions' => $listOptions,
+            'left_space' => $left_space
+        ]);
+    }
+
     /**
      * Show the form for creating a new bookshelf.
      */
