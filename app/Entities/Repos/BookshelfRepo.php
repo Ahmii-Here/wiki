@@ -24,6 +24,17 @@ class BookshelfRepo
         $this->baseRepo = $baseRepo;
     }
 
+     /**
+     * Get all bookshelves .
+     */
+    public function getAll()
+    {
+        return Bookshelf::visible()
+            ->with(['visibleBooks', 'cover'])
+            ->orderBy('name', 'asc')
+            ->get();
+    }
+
     /**
      * Get all bookshelves in a paginated format.
      */

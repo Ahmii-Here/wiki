@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     // Shelves
     Route::get('/create-shelf', [EntityControllers\BookshelfController::class, 'create']);
     Route::get('/shelves/', [EntityControllers\BookshelfController::class, 'index']);
+    Route::get('/tree-view/', [EntityControllers\BookshelfController::class, 'index_tree']);
     Route::post('/shelves/', [EntityControllers\BookshelfController::class, 'store']);
     Route::get('/shelves/{slug}/edit', [EntityControllers\BookshelfController::class, 'edit']);
     Route::get('/shelves/{slug}/delete', [EntityControllers\BookshelfController::class, 'showDelete']);

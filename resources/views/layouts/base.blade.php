@@ -70,6 +70,7 @@
     @yield('bottom')
     @if($cspNonce ?? false)
         <script src="{{ versioned_asset('dist/app.js') }}" nonce="{{ $cspNonce }}"></script>
+        
     @endif
     @yield('scripts')
 
