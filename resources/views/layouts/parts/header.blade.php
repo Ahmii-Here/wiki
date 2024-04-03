@@ -9,9 +9,9 @@
     </div>
 
     <div class="flex-container-column items-center justify-center hide-under-l">
-    @if(user()->hasAppAccess())
+   
         @include('layouts.parts.header-search')
-    @endif
+    
     </div>
 
     <nav refs="header-mobile-toggle@menu" class="header-links">
