@@ -67,14 +67,14 @@ class BookshelfController extends Controller
         ]);
 
         $shelves = $this->shelfRepo->getAllPaginated(18, $listOptions->getSort(), $listOptions->getOrder());
-        $recents = $this->isSignedIn() ? $this->shelfRepo->getRecentlyViewed(4) : false;
+        $recents = $this->shelfRepo->getRecentlyViewed(4);
         $popular = $this->shelfRepo->getPopular(4);
         $new = $this->shelfRepo->getRecentlyCreated(4);
         $left_space = $this->shelfRepo->getAll();
 
         $this->shelfContext->clearShelfContext();
         $this->setPageTitle(trans('Tree View'));
-
+        
         return view('shelves.index_tree', [
             'shelves'     => $shelves,
             'recents'     => $recents,

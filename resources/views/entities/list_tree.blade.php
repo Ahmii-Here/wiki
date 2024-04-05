@@ -1,60 +1,152 @@
 @if(count($entities) > 0)
-<div class="entity-list {{ $style ?? '' }}">
-    @foreach($entities as $index => $entity)
-    <?php $type = $entity->getType(); ?>
-    <div class="entity-wrapper">
-        <a href="{{ $entity->getUrl() }}" class="{{$type}} {{$type === 'page' && $entity->draft ? 'draft' : ''}} {{$classes ?? ''}} entity-list-item" data-entity-type="{{$type}}" data-entity-id="{{$entity->id}}">
-            <span role="presentation" class="icon text-bookshelf">@icon('bookshelf')</span>
-            <div class="content">
-                <h4 class="entity-list-item-name break-text">{{ $entity->preview_name ?? $entity->name }}</h4>
-                {{ $slot ?? '' }}
-            </div>
-        </a>
-
-        <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-8"> <!-- Adjust the column width as needed -->
-            <a href="javascript:void(0);" class="btn btn-primary toggle-button" style="font-size: small;" data-target="entity-{{$entity->id}}">@icon('caret-down')expand</a>
-        </div>
-    </div>
-</div>
-
-        <div id="entity-{{$entity->id}}" class="books-list" style="display: none; margin-left:10px;">
-            @if(count($entity->books) > 0)
-            @foreach($entity->books as $book)
-            <a href="{{ $book->getUrl() }}" class="{{$type}} {{$type === 'page' && $entity->draft ? 'draft' : ''}} {{$classes ?? ''}} entity-list-item" data-entity-type="{{$type}}" data-entity-id="{{$entity->id}}">
-                <span role="presentation" class="icon text-book">@icon('book')</span>
-                <div class="content">
-                    <h4 class="entity-list-item-name break-text">{{ $book->name }}</h4>
-                    {{ $slot ?? '' }}
-                </div>
-            </a>
-            @endforeach
-            @else
-            <p class="text-muted empty-text pb-xl mb-none text-center">
-                {{ $emptyText ?? trans('No Books Available') }}
-            </p>
-            @endif
-        </div>
-    </div>
-    @endforeach
-</div>
+    <ul class="sidebar-navigation">
+        @foreach($entities as $space)
+            <li class="entity space">
+                <a href="javascript:void(0)" class="space entity-link toggle">
+                    <span role="presentation" class="icon">@icon('bookshelf')</span>
+                    <span class="entity-name">{{ $space->name }}</span>
+                </a>
+                @if(count($space->books) > 0)
+                    <ul class="nested-entities books">
+                        @foreach($space->books as $book)
+                            <li class="entity book">
+                                <a href="{{ $book->getUrl() }}" class="book entity-link">
+                                    <span role="presentation" class="icon">@icon('book')</span>
+                                    <span class="entity-name">{{ $book->name }}</span>
+                                </a>
+                                <div class="toggle-arrow" onclick="toggleEntity(this)"></div>
+                                @if(count($book->chapters) > 0)
+                                    <ul class="nested-entities chapters">
+                                        @foreach($book->chapters as $chapter)
+                                            <li class="entity chapter">
+                                                <a href="{{ $chapter->getUrl() }}" class="chapter entity-link">
+                                                    <span role="presentation" class="icon">@icon('chapter')</span>
+                                                    <span class="entity-name">{{ $chapter->name }}</span>
+                                                </a>
+                                                @if(count($chapter->pages) > 0)
+                                                    <ul class="nested-entities pages">
+                                                        @foreach($chapter->pages as $page)
+                                                            <li class="entity page">
+                                                                <a href="{{ $page->getUrl() }}" class="page entity-link">
+                                                                    <span role="presentation" class="icon">@icon('page')</span>
+                                                                    <span class="entity-name">{{ $page->name }}</span>
+                                                                </a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                                @if(count($book->directPages) > 0) <!-- Direct pages under the book -->
+                                    <ul class="nested-entities pages">
+                                        @foreach($book->directPages as $directPage)
+                                            <li class="entity page">
+                                                <a href="{{ $directPage->getUrl() }}" class="page entity-link">
+                                                    <span role="presentation" class="icon">@icon('page')</span>
+                                                    <span class="entity-name">{{ $directPage->name }}</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </li>
+        @endforeach
+    </ul>
 @else
-<p class="text-muted empty-text pb-l mb-none">
-    {{ $emptyText ?? trans('common.no_items') }}
-</p>
+    <p class="text-muted empty-text">{{ $emptyText ?? trans('common.no_items') }}</p>
 @endif
 
-<script nonce="{{$cspNonce}}">
+<style>
+    :root {
+        --docspress-color-text: #333; /* Default text color */
+        --docspress-color-primary: #1a73e8; /* Primary color for hover and active links */
+        --docspress--navigation--padding: 10px 1px 10px 10px;
+        --docspress--navigation--font-size: 0.85em;
+        --docspress--navigation--color: var(--docspress-color-text);
+        --docspress--navigation--link--padding: 3px 20px;
+        --docspress--navigation--link--font-weight: 500;
+        --docspress--navigation--link--color: inherit;
+        --docspress--navigation--link-hover--color: var(--docspress-color-primary);
+        --docspress--navigation--link-active--color: var(--docspress-color-primary);
+        --docspress--navigation--link-active--font-weight: 500;
+        --docspress--navigation--link-parent--padding: 7px 0;
+        --docspress--navigation--link-children--font-weight: 400;
+        --docspress--navigation--category--padding: 15px 0 7px 0;
+        --docspress--navigation--category--font-weight: 700;
+        --docspress--navigation--children--padding: 0 0 10px;
+        --docspress--navigation--children--margin-left: 15px;
+    }
+   .sidebar-navigation, 
+    .sidebar-navigation ul, 
+    .sidebar-navigation ul li, 
+    .sidebar-navigation .nested-entities, 
+    .sidebar-navigation .nested-entities li {
+        list-style-type: none !important; /* Removes bullets from all lists, ensuring override */
+    }
+
+    .sidebar-navigation .entity-link,
+    .sidebar-navigation .entity-name {
+        white-space: nowrap; /* Prevents text from wrapping */
+        text-overflow: ellipsis; /* Adds an ellipsis if the text overflows */
+    }
+
+    .sidebar-navigation {
+        padding: var(--docspress--navigation--padding);
+        margin: 0;
+        font-size: var(--docspress--navigation--font-size);
+        color: var(--docspress--navigation--color);
+        list-style: none;
+    }
+
+    .sidebar-navigation .entity .toggle {
+        padding: var(--docspress--navigation--link-parent--padding);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-weight: var(--docspress--navigation--link--font-weight);
+    }
+
+    .sidebar-navigation .entity .entity-link {
+        text-decoration: none;
+        padding: var(--docspress--navigation--link--padding);
+        color: var(--docspress--navigation--link--color);
+        display: flex;
+        align-items: center;
+        transition: color 0.3s;
+    }
+
+    .sidebar-navigation .entity .entity-link:hover {
+       color: var(--docspress--navigation--link-hover--color);
+    }
+ 
+    .    .sidebar-navigation, .nested-entities {
+        list-style-type: none; /* Removes bullets from all lists */
+        padding-left: 0; /* Removes indentation for the list */
+    }
+
+
+    .expanded .toggle-arrow:before {
+        transform: rotate(180deg);
+    }
+</style>
+
+
+
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.toggle-button').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const targetElement = document.getElementById(targetId);
-                if (targetElement.style.display === "none") {
-                    targetElement.style.display = "block";
-                } else {
-                    targetElement.style.display = "none";
+        // Toggle the display of nested entities
+        document.querySelectorAll('.sidebar-navigation .toggle').forEach(function(toggle) {
+            toggle.addEventListener('click', function() {
+                let nextUl = toggle.nextElementSibling;
+                if (nextUl && nextUl.classList.contains('nested-entities')) {
+                    nextUl.style.display = nextUl.style.display === 'block' ? 'none' : 'block';
+                    toggle.classList.toggle('expanded'); // Toggle the class to rotate the arrow
                 }
             });
         });
