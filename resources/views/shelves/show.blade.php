@@ -70,6 +70,10 @@
 
 @section('left')
 
+<div id="recents" class="mb-xl">
+    @include('entities.list_tree', ['entities' => $left_space, 'style' => 'compact'])
+</div>
+
     @if($shelf->tags->count() > 0)
         <div id="tags" class="mb-xl">
             @include('entities.tag-list', ['entity' => $shelf])

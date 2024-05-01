@@ -15,12 +15,14 @@ use BookStack\Util\SimpleListOptions;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use BookStack\Entities\Repos\PageRepo;
 
 class BookshelfController extends Controller
 {
     public function __construct(
         protected BookshelfRepo $shelfRepo,
         protected ShelfContext $shelfContext,
+        protected PageRepo $pageRepo,
         protected ReferenceFetcher $referenceFetcher
     ) {
     }
@@ -71,6 +73,7 @@ class BookshelfController extends Controller
         $popular = $this->shelfRepo->getPopular(4);
         $new = $this->shelfRepo->getRecentlyCreated(4);
         $left_space = $this->shelfRepo->getAll();
+        // $left_space = $this->shelfRepo->getAll(['books.chapters.pages'], $listOptions->getSort(), $listOptions->getOrder());
 
         $this->shelfContext->clearShelfContext();
         $this->setPageTitle(trans('Tree View'));
@@ -129,6 +132,7 @@ class BookshelfController extends Controller
     {
         $shelf = $this->shelfRepo->getBySlug($slug);
         $this->checkOwnablePermission('bookshelf-view', $shelf);
+        
 
         $listOptions = SimpleListOptions::fromRequest($request, 'shelf_books')->withSortOptions([
             'default' => trans('common.sort_default'),
@@ -147,7 +151,7 @@ class BookshelfController extends Controller
         View::incrementFor($shelf);
         $this->shelfContext->setShelfContext($shelf->id);
         $view = setting()->getForCurrentUser('bookshelf_view_type');
-
+        $left_space = $this->shelfRepo->getAll();
         $this->setPageTitle($shelf->getShortName());
 
         return view('shelves.show', [
@@ -157,6 +161,7 @@ class BookshelfController extends Controller
             'activity'                => $activities->entityActivity($shelf, 20, 1),
             'listOptions'             => $listOptions,
             'referenceCount'          => $this->referenceFetcher->getReferenceCountToEntity($shelf),
+            'left_space' => $left_space
         ]);
     }
 

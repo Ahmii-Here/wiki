@@ -7,12 +7,10 @@
 
 
 @section('left')
-    @if($recents)
         <div id="recents" class="mb-xl">
-            <h5>{{ trans('List Spaces') }}</h5>
             @include('entities.list_tree', ['entities' => $left_space, 'style' => 'compact'])
         </div>
-    @endif
+   
 
     <!-- <div id="popular" class="mb-xl">
         <h5>{{ trans('She') }}</h5>

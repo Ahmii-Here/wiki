@@ -20,12 +20,15 @@ use BookStack\References\ReferenceFetcher;
 use BookStack\Util\SimpleListOptions;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use BookStack\Entities\Repos\BookshelfRepo;
+
 use Throwable;
 
 class BookController extends Controller
 {
     public function __construct(
         protected ShelfContext $shelfContext,
+        protected BookshelfRepo $shelfRepo,
         protected BookRepo $bookRepo,
         protected ReferenceFetcher $referenceFetcher
     ) {
@@ -130,6 +133,8 @@ class BookController extends Controller
         }
 
         $this->setPageTitle($book->getShortName());
+        $left_space = $this->shelfRepo->getAll();
+
 
         return view('books.show', [
             'book'              => $book,
@@ -139,6 +144,8 @@ class BookController extends Controller
             'watchOptions'      => new UserEntityWatchOptions(user(), $book),
             'activity'          => $activities->entityActivity($book, 20, 1),
             'referenceCount'    => $this->referenceFetcher->getReferenceCountToEntity($book),
+            'left_space' => $left_space
+
         ]);
     }
 
