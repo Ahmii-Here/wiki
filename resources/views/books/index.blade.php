@@ -5,6 +5,9 @@
 @stop
 
 @section('left')
+    <div id="recents" class="mb-xl">
+    @include('entities.list_tree', ['entities' => $left_space, 'style' => 'compact'])
+    </div>
     @if($recents)
         <div id="recents" class="mb-xl">
             <h5>{{ trans('entities.recently_viewed') }}</h5>

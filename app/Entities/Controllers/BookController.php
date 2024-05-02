@@ -55,6 +55,9 @@ class BookController extends Controller
 
         $this->setPageTitle(trans('entities.books'));
 
+        $left_space = $this->shelfRepo->getAll();
+
+
         return view('books.index', [
             'books'   => $books,
             'recents' => $recents,
@@ -62,6 +65,8 @@ class BookController extends Controller
             'new'     => $new,
             'view'    => $view,
             'listOptions' => $listOptions,
+            'left_space' => $left_space
+
         ]);
     }
 

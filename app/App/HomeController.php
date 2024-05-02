@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    public function __construct(
+        protected BookshelfRepo $shelfRepo,
+    ) {
+    }
     /**
      * Display the homepage.
      */
@@ -54,13 +58,16 @@ class HomeController extends Controller
         if (!in_array($homepageOption, $homepageOptions)) {
             $homepageOption = 'default';
         }
-
+        $left_space = $this->shelfRepo->getAll();
+        $darkMode = (bool) setting()->getForCurrentUser('dark-mode-enabled');
+        
         $commonData = [
             'activity' => $activity,
             'recents' => $recents,
             'recentlyUpdatedPages' => $recentlyUpdatedPages,
             'draftPages' => $draftPages,
             'favourites' => $favourites,
+            'left_space' => $left_space
         ];
 
         // Add required list ordering & sorting for books & shelves views.

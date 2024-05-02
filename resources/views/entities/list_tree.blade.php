@@ -1,6 +1,11 @@
+@php
+    $darkMode = (bool) setting()->getForCurrentUser('dark-mode-enabled');
+@endphp
+
+
 <h5>{{ trans('Space Navigation') }}</h5>
 @if(count($entities) > 0)
-    <ul class="sidebar-navigation">
+    <ul class="sidebar-navigation {{ $darkMode ? 'dark-mode' : 'light-mode' }}">
         @foreach($entities as $space)
         <li class="entity space {{ request()->is('shelves/'.$space->slug) ? 'active-tab' : '' }}">
             <a href="{{ $space->getUrl() }}" style="border-left-color: #a94747;"  class="space entity-link-space toggle">
@@ -78,7 +83,6 @@
     padding: 10px 0; /* Adds padding to the top and bottom of the navigation */
     margin: 0;
     font-size: 14px; /* Adjusts font size for better readability */
-    background: #f9f9f9; /* Sets a background color similar to your screenshot */
     width: 100%; /* Ensures the nav takes full available width */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Adds subtle shadow for depth */
   
@@ -131,6 +135,28 @@
     transform: rotate(-90deg); /* Rotates arrow when expanded */
 }
 
+/* Additional styles for dark mode */
+.dark-mode .sidebar-navigation {
+        color: #ccc; /* Lighter text for dark backgrounds */
+    }
+
+    .dark-mode .entity-link-space,
+    .dark-mode .entity-link-book,
+    .dark-mode .entity-link-chapter,
+    .dark-mode .entity-link-page {
+        color: #ddd; /* Lighter text for links */
+    }
+
+    .light-mode .sidebar-navigation {
+        color: #333; /* Darker text for light backgrounds */
+    }
+
+    .light-mode .entity-link-space,
+    .light-mode .entity-link-book,
+    .light-mode .entity-link-chapter,
+    .light-mode .entity-link-page {
+        color: #333; /* Standard text color for links */
+    }
 </style>
 
              <script nonce="{{ $cspNonce }}">
